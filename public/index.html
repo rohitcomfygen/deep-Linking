@@ -1,21 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Deep Link Test</title>
 </head>
+
 <body>
   <div id="app"></div>
   <script>
     const app = document.getElementById('app');
+    const deviceId = "5b5bce770b60bac4"; // example device ID
+
+    const APP_SCHEME = `Eyision://open?deviceId=${deviceId}`;
+    const PLAY_STORE = `https://play.google.com/store/apps/details?id=com.app.eysion`;
+    const APP_STORE = `https://apps.apple.com/app/idYOUR_APP_ID`;
+
+    function openApp() {
+      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+      const isAndroid = /android/i.test(userAgent);
+      const isIOS = /iPhone|iPad|iPod/i.test(userAgent);
+
+      const now = Date.now();
+      // Try opening the app
+      window.location = APP_SCHEME;
+
+      // After 2 seconds, if user is still here, redirect to store
+      setTimeout(() => {
+        if (Date.now() - now < 2500) {
+          window.location = isAndroid ? PLAY_STORE : APP_STORE;
+        }
+      }, 2000);
+    }
+
     app.innerHTML = `
       <h1>Deep Link Test Page</h1>
       <p>Path: ${window.location.pathname}</p>
       <p>Query: ${window.location.search}</p>
       <p>Full URL: ${window.location.href}</p>
-      <button onclick="window.location='Eyision://NewsDetails'">Open in App</button>
+      <button onclick="openApp()">Open App</button>
     `;
   </script>
 </body>
+
 </html>
