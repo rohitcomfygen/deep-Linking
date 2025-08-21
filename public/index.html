@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deep Link Test</title>
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    const app = document.getElementById('app');
+    app.innerHTML = `
+      <h1>Deep Link Test Page</h1>
+      <p>Path: ${window.location.pathname}</p>
+      <p>Query: ${window.location.search}</p>
+      <p>Full URL: ${window.location.href}</p>
+      <button onclick="window.location='Eyision://NewsDetails'">Open in App</button>
+    `;
+  </script>
+</body>
+</html>
