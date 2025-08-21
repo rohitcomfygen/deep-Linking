@@ -11,8 +11,6 @@
   <div id="app"></div>
   <script>
     const app = document.getElementById('app');
-    const deviceId = "5b5bce770b60bac4"; // example device ID
-
     const APP_SCHEME = `Eyision://news`;
     const PLAY_STORE = `https://play.google.com/store/apps/details?id=com.app.eysion`;
     const APP_STORE = `https://apps.apple.com/app/idYOUR_APP_ID`;
@@ -22,13 +20,22 @@
       const isAndroid = /android/i.test(userAgent);
       const isIOS = /iPhone|iPad|iPod/i.test(userAgent);
 
-      const now = Date.now();
-      // Try opening the app
-      window.location = APP_SCHEME;
+      const start = Date.now();
 
-      // After 2 seconds, if user is still here, redirect to store
+      if (isAndroid) {
+        // Create a hidden iframe for Android deep link handling
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.src = APP_SCHEME;
+        document.body.appendChild(iframe);
+      } else {
+        // Directly try to open for iOS
+        window.location = APP_SCHEME;
+      }
+
+      // After a short delay, check if the app didn't open and redirect
       setTimeout(() => {
-        if (Date.now() - now < 2500) {
+        if (Date.now() - start < 2200) {
           window.location = isAndroid ? PLAY_STORE : APP_STORE;
         }
       }, 2000);
