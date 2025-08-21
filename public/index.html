@@ -11,6 +11,7 @@
   <div id="app"></div>
   <script>
     const app = document.getElementById('app');
+
     const APP_SCHEME = `Eyision://news`;
     const PLAY_STORE = `https://play.google.com/store/apps/details?id=com.app.eysion`;
     const APP_STORE = `https://apps.apple.com/in/app/eyision/id6749613401`;
@@ -20,37 +21,30 @@
       const isAndroid = /android/i.test(userAgent);
       const isIOS = /iPhone|iPad|iPod/i.test(userAgent);
 
-      let redirectTimer;
+      const start = Date.now();
 
-      // Cancel fallback if user leaves the browser (app opened)
-      const cancelRedirect = () => clearTimeout(redirectTimer);
-      document.addEventListener('visibilitychange', () => {
-        if (document.hidden) cancelRedirect();
-      });
-      window.addEventListener('pagehide', cancelRedirect);
-
+      // Try to open the app
       if (isAndroid) {
-        // Use hidden iframe for Android
         const iframe = document.createElement('iframe');
         iframe.style.display = 'none';
         iframe.src = APP_SCHEME;
         document.body.appendChild(iframe);
       } else {
-        // Use direct location change for iOS
         window.location = APP_SCHEME;
       }
 
-      // Set fallback redirect to store if app didn't open
-      redirectTimer = setTimeout(() => {
-        window.location = isAndroid ? PLAY_STORE : APP_STORE;
-      }, 2000);
+      // Use a strict timeout to fallback to store if app is not installed
+      setTimeout(() => {
+        const elapsed = Date.now() - start;
+        // If less than 1500 ms passed, app likely did NOT open
+        if (elapsed < 1500) {
+          window.location = isAndroid ? PLAY_STORE : APP_STORE;
+        }
+      }, 1200);
     }
 
     app.innerHTML = `
       <h1>Deep Link Test Page</h1>
-      <p>Path: ${window.location.pathname}</p>
-      <p>Query: ${window.location.search}</p>
-      <p>Full URL: ${window.location.href}</p>
       <button onclick="openApp()">Open App</button>
     `;
   </script>
